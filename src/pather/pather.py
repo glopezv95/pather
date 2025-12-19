@@ -151,5 +151,4 @@ def get_child_path(
 
 if __name__ == '__main__':
 
-    path_home = get_child_path(path_src=Path(), include=[r'project'], exclude=[r'toml'])
-    print(path_home)
+    print(next(_create_generator([], True, [])))
