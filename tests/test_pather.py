@@ -21,7 +21,7 @@ class TestCreateGenerator:
 
     def test_generic_correct_nenum(self) -> None:
         result = _create_generator(
-            iterable=['abc', 'ácdr', 'bc', '\tacd', 'c'],
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
             enum=False,
             include=['ac', 'cd'],
             exclude=['b']
@@ -35,7 +35,7 @@ class TestCreateGenerator:
 
     def test_generic_correct_enum(self) -> None:
         result = _create_generator(
-            iterable=['abc', 'ácdr', 'bc', '\tacd', 'c'],
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
             enum=True,
             include=['ac', 'cd'],
             exclude=['b']
@@ -49,7 +49,7 @@ class TestCreateGenerator:
 
     def test_generic_incorrect_nenum(self) -> None:
         result = _create_generator(
-            iterable=['abc', 'ácdr', 'bc', '\tacd', 'c'],
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
             enum=False,
             include=['37', 'cd'],
             exclude=['b']
@@ -61,12 +61,54 @@ class TestCreateGenerator:
 
     def test_generic_incorrect_enum(self) -> None:
         result = _create_generator(
-            iterable=['abc', 'ácdr', 'bc', '\tacd', 'c'],
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
             enum=True,
             include=['37', 'cd'],
             exclude=['b']
         )
 
         assert isinstance(result, Generator)
+        with pytest.raises(StopIteration):
+            assert next(result)
+
+    def test_generic_correct_nenum(self) -> None:
+        result = _create_generator(
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
+            enum=False,
+            include=['ac', 'cd'],
+            exclude=['b']
+        )
+
+        assert isinstance(result, Generator)
+        assert next(result) == 'ácdr'
+        assert next(result) == '\tacd'
+        with pytest.raises(StopIteration):
+            assert next(result)
+
+    def test_exclude_nenum(self) -> None:
+        result = _create_generator(
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
+            enum=False,
+            include=['ac', 'cd']
+        )
+
+        assert isinstance(result, Generator)
+        assert next(result) == 'acbcd'
+        assert next(result) == 'ácdr'
+        assert next(result) == '\tacd'
+        with pytest.raises(StopIteration):
+            assert next(result)
+
+    def test_exclude_enum(self) -> None:
+        result = _create_generator(
+            iterable=['acbcd', 'ácdr', 'bc', '\tacd', 'c'],
+            enum=True,
+            include=['ac', 'cd']
+        )
+
+        assert isinstance(result, Generator)
+        assert next(result) == 0
+        assert next(result) == 1
+        assert next(result) == 3
         with pytest.raises(StopIteration):
             assert next(result)
