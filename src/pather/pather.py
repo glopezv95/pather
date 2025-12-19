@@ -148,3 +148,7 @@ def get_child_path(
         )
     
     return path_dst
+
+if __name__ == '__main__':
+
+    print(next(_create_generator([], True, [])))
