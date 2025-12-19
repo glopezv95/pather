@@ -1,2 +1,2 @@
-# python-pkg-template
-A template for python packages.
+# pather
+A package to handle paths.
